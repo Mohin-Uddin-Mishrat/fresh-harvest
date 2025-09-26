@@ -13,6 +13,7 @@ export default function RootLayout({
       <body >
         <StoreProvider>
           <div className='relative min-h-screen'>
+            
             {children}
 
             {/* Absolute positioned element */}

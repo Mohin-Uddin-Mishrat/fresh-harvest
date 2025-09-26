@@ -1,6 +1,6 @@
 import Image from 'next/image'
 import React from 'react'
-import model from '../../public/model.png'
+import model from '../../public/handsome-man-with-headphones-standing-white-wall.jpg'
 export default function Reviews() {
     return (
         <div className='mx-2 lg:mx-28 '>

@@ -1,82 +1,204 @@
 "use client"
 import ModalWrapper from '@/heplers/ModalWrapper'
 import React, { useEffect, useState } from 'react'
-import { Eye, EyeOff, Mail, Lock, Facebook } from 'lucide-react'
+import { Eye, EyeOff, Mail, Lock, Facebook, User } from 'lucide-react'
+import { useAuth } from '@/hooks/authHook';
+import { useRouter } from 'next/navigation';
+import { SuccessToast } from '@/heplers/ToastHelper';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/redux/store/store';
 
 export default function Login() {
     const [isModalOpen, setIsModalOpen] = useState(true);
     const [showPassword, setShowPassword] = useState(false);
     const [rememberMe, setRememberMe] = useState(false);
-    useEffect(() => {
-        if (isModalOpen) {
-            const timer = setTimeout(() => {
-                setIsModalOpen(false);
-            }, 5000); // 5000 milliseconds = 5 seconds
+    const [fullName, setFullName] = useState('')
+    const [email, setEmail] = useState('kk@gmail.com')
+    const [isRegister, setIsregister] = useState(false)
+    const [password, setPassword] = useState('1234Mohin;')
+    const { login, loginLoading, register, registerLoading } = useAuth()
+    const { isAuthenticated } = useSelector((state: RootState) => state.auth)
 
-            // Cleanup function to clear timeout if component unmounts
-            return () => clearTimeout(timer);
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault()
+        try {
+            const result = await login(email, password)
+            SuccessToast("logged in successfull")
+            setIsModalOpen(false)
+        } catch (error) {
+            console.error('Login failed:', error)
         }
-    }, [isModalOpen]);
+    }
+    const handleRegisterSubmit = async (e: React.FormEvent) => {
+        e.preventDefault()
+        console.log(fullName, email, password)
+        try {
+            const result = await register(fullName, email, password)
+
+            if (result.success) {
+                SuccessToast("registration successfull")
+                setIsModalOpen(false)
+            }
+        } catch (error: any) {
+            // setError(error?.data?.message || 'Registration failed. Please try again.')
+        }
+    }
+
+    useEffect(() => {
+        if (isAuthenticated) {
+            setIsModalOpen(false)
+        }
+    }, [isAuthenticated])
     return (
         <ModalWrapper
-            title="Login Not Required ,Please Wait 5 Second"
+            title={isRegister ? "Register" : "Login"}
             open={isModalOpen}
             onOpenChange={setIsModalOpen}
         >
             <div className="space-y-6">
-                {/* Email Input */}
-                <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-700">Email</label>
-                    <div className="relative">
-                        <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                        <input
-                            type="email"
-                            placeholder="Enter your email"
-                            className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        />
-                    </div>
-                </div>
+                {
+                    isRegister ?
+                        <form onSubmit={handleRegisterSubmit}>
+                            {/* fullname Input */}
+                            <div className="space-y-2">
+                                <label className="text-sm font-medium text-gray-700">Full Name</label>
+                                <div className="relative">
+                                    <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                                    <input
+                                        value={fullName}
+                                        onChange={(e) => setFullName(e.target.value)}
+                                        required
+                                        type="text"
+                                        placeholder="Enter your Full Name"
+                                        className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    />
+                                </div>
+                            </div>
+                            {/* Email Input */}
+                            <div className="space-y-2">
+                                <label className="text-sm font-medium text-gray-700">Email</label>
+                                <div className="relative">
+                                    <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                                    <input
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                        required
+                                        type="email"
+                                        placeholder="Enter your email"
+                                        className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    />
+                                </div>
+                            </div>
 
-                {/* Password Input */}
-                <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-700">Password</label>
-                    <div className="relative">
-                        <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                        <input
-                            type={showPassword ? "text" : "password"}
-                            placeholder="Enter your password"
-                            className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        />
-                        <button
-                            type="button"
-                            onClick={() => setShowPassword(!showPassword)}
-                            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                        >
-                            {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                        </button>
-                    </div>
-                </div>
 
-                {/* Remember Me & Forget Password */}
-                <div className="flex justify-between items-center">
-                    <label className="flex items-center space-x-2 cursor-pointer">
-                        <input
-                            type="checkbox"
-                            checked={rememberMe}
-                            onChange={(e) => setRememberMe(e.target.checked)}
-                            className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
-                        />
-                        <span className="text-sm text-gray-700">Remember me</span>
-                    </label>
-                    <button className="text-sm text-blue-600 hover:text-blue-800 font-medium">
-                        Forget Password?
-                    </button>
-                </div>
+                            {/* Password Input */}
+                            <div className="space-y-2">
+                                <label className="text-sm font-medium text-gray-700">Password</label>
+                                <div className="relative">
+                                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                                    <input
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
+                                        required
+                                        type={showPassword ? "text" : "password"}
+                                        placeholder="Enter your password"
+                                        className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowPassword(!showPassword)}
+                                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                                    >
+                                        {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                                    </button>
+                                </div>
+                            </div>
 
-                {/* Login Button */}
-                <button className="w-full bg-[#FF6A1A] text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors font-medium text-sm">
-                    Login
-                </button>
+                            {/* Remember Me & Forget Password */}
+                            <div className="flex my-4 justify-between items-center">
+                                <label className="flex items-center space-x-2 cursor-pointer">
+                                    <input
+                                        type="checkbox"
+                                        checked={rememberMe}
+                                        onChange={(e) => setRememberMe(e.target.checked)}
+                                        className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
+                                    />
+                                    <span className="text-sm text-gray-700">Remember me</span>
+                                </label>
+                                <button className="text-sm text-blue-600 hover:text-blue-800 font-medium">
+                                    Forget Password?
+                                </button>
+                            </div>
+
+                            {/* Register Button */}
+                            <button className="w-full bg-[#FF6A1A] text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors font-medium text-sm">
+                                Register
+                            </button>
+                        </form>
+                        :
+                        // login form
+                        <form onSubmit={handleSubmit}>
+                            {/* Email Input */}
+                            <div className="space-y-2">
+                                <label className="text-sm font-medium text-gray-700">Email</label>
+                                <div className="relative">
+                                    <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                                    <input
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                        required
+                                        type="email"
+                                        placeholder="Enter your email"
+                                        className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    />
+                                </div>
+                            </div>
+
+                            {/* Password Input */}
+                            <div className="space-y-2">
+                                <label className="text-sm font-medium text-gray-700">Password</label>
+                                <div className="relative">
+                                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                                    <input
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
+                                        required
+                                        type={showPassword ? "text" : "password"}
+                                        placeholder="Enter your password"
+                                        className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowPassword(!showPassword)}
+                                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                                    >
+                                        {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* Remember Me & Forget Password */}
+                            <div className="flex my-4 justify-between items-center">
+                                <label className="flex items-center space-x-2 cursor-pointer">
+                                    <input
+                                        type="checkbox"
+                                        checked={rememberMe}
+                                        onChange={(e) => setRememberMe(e.target.checked)}
+                                        className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
+                                    />
+                                    <span className="text-sm text-gray-700">Remember me</span>
+                                </label>
+                                <button className="text-sm text-blue-600 hover:text-blue-800 font-medium">
+                                    Forget Password?
+                                </button>
+                            </div>
+
+                            {/* Login Button */}
+                            <button className="w-full bg-[#FF6A1A] text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors font-medium text-sm">
+                                {loginLoading ? 'Logging in...' : 'Login'}
+                            </button>
+                        </form>
+                }
 
                 {/* Divider */}
                 <div className="relative flex items-center justify-center">
@@ -105,9 +227,9 @@ export default function Login() {
 
                 {/* Sign Up Link */}
                 <div className="text-center text-sm text-gray-600">
-                    {`Don't have an account?`}
-                    <button className="text-blue-600 hover:text-blue-800 font-medium">
-                        Sign up
+                    {!isRegister ? `Don't have an account?` : ""}
+                    <button onClick={() => setIsregister(!isRegister)} className="text-blue-600 hover:text-blue-800 font-medium">
+                        {!isRegister ? "Sign Up" : "Login"}
                     </button>
                 </div>
             </div>
