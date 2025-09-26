@@ -1,5 +1,5 @@
 # Project Overview
-Health Harvest is a modern web application built with Next.js, React, and Redux Toolkit for managing health-related data and products.
+Health Harvest is a modern web application built with Next.js, React, and Redux Toolkit, RTK query for managing health-related data and products.
 
 # Technology Stack
 Framework: Next.js 15.5.4
