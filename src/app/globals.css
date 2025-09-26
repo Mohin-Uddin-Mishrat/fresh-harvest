@@ -1,4 +1,51 @@
 @import "tailwindcss";
+@theme {
+  --color-white-base: #ffffff;
+
+  --color-neutral-50: #eeeeee;
+  --color-neutral-100: #c9c9c9;
+  --color-neutral-200: #afafaf;
+  --color-neutral-300: #8a8a8a;
+  --color-neutral-400: #747474;
+  --color-neutral-500: #515151;
+  --color-neutral-600: #4a4a4a;
+  --color-neutral-900: #222222;
+
+  --color-error-50: #ffe6e6;
+  --color-error-300: #ff5454;
+  --color-error-400: #ff3333;
+  --color-error-500: #ff0000;
+  --color-error-600: #e80000;
+  --color-error-900: #6b0000;
+
+  --color-warning-50: #fff1ed;
+  --color-warning-500: #ff764a;
+  --color-warning-600: #e86b43;
+
+  --color-success-50: #f3ffeb;
+  --color-success-600: #76e533;
+  --color-success-700: #5cb328;
+  --color-success-800: #488b1f;
+  --color-success-900: #376a18;
+
+  --color-secondary-50: #efecfd;
+  --color-secondary-100: #cdc4f7;
+  --color-secondary-200: #b5a8f4;
+  --color-secondary-500: #5e42e6;
+  --color-secondary-600: #563cd1;
+  --color-secondary-900: #271c61;
+
+  --color-primary-50: #e9f3fd;
+  --color-primary-100: #bad9f8;
+  --color-primary-200: #99c7f4;
+  --color-primary-400: #4d9eed;
+  --color-primary-500: #2186e8;
+  --color-primary-600: #1e7ad3;
+  --color-primary-700: #175fa5;
+  --color-primary-900: #0e3861;
+
+  --shadow-primary: 0px 0px 15px 0px rgba(77, 158, 237, 0.35);
+}
 
 :root {
   --background: #ffffff;
@@ -18,6 +65,38 @@
     --foreground: #ededed;
   }
 }
+
+/* modal styles */
+.modaleOverlay {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 99;
+  background: rgba(45, 45, 45, 0.6);
+  backdrop-filter: blur(5px);
+}
+
+.modalContent {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 101;
+  width: 90vw;
+  max-width: 500px;
+  background: var(--color-white-base);
+  padding: 20px;
+  border-radius: 4px;
+  box-shadow: var(--shadow-primary);
+}
+
+.modalTitle {
+  font-size: 20px;
+  font-weight: 600;
+}
+/* modal styles */
 
 body {
   background: var(--background);
