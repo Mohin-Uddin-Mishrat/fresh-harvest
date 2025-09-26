@@ -5,8 +5,8 @@ interface ModalWrapperProps {
   trigger?: ReactNode;
   title: string;
   children: ReactNode;
-  open?: boolean; // ✅ Add this
-  onOpenChange?: (open: boolean) => void; // ✅ Add this
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }
 
 export default function ModalWrapper({
@@ -17,7 +17,7 @@ export default function ModalWrapper({
   onOpenChange,
 }: ModalWrapperProps) {
   return (
-    <Dialog.Root open={open} onOpenChange={onOpenChange}> {/* ✅ Controlled */}
+    <Dialog.Root open={open} onOpenChange={onOpenChange}> 
       {trigger && <Dialog.Trigger asChild>{trigger}</Dialog.Trigger>}
 
       <Dialog.Portal>
