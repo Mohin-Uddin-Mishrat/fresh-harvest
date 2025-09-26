@@ -4,7 +4,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 export const api = createApi({
   baseQuery: fetchBaseQuery({ 
-    baseUrl: 'https://api-fresh-harvest.code-commando.com/api/v1/' 
+    baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL 
   }),
   endpoints: (builder) => ({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
