@@ -3,7 +3,6 @@ import ModalWrapper from '@/heplers/ModalWrapper'
 import React, { useEffect, useState } from 'react'
 import { Eye, EyeOff, Mail, Lock, Facebook, User } from 'lucide-react'
 import { useAuth } from '@/hooks/authHook';
-import { useRouter } from 'next/navigation';
 import { SuccessToast } from '@/heplers/ToastHelper';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store/store';
@@ -16,13 +15,13 @@ export default function Login() {
     const [email, setEmail] = useState('kk@gmail.com')
     const [isRegister, setIsregister] = useState(false)
     const [password, setPassword] = useState('1234Mohin;')
-    const { login, loginLoading, register, registerLoading } = useAuth()
+    const { login, loginLoading, register } = useAuth()
     const { isAuthenticated } = useSelector((state: RootState) => state.auth)
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         try {
-            const result = await login(email, password)
+            await login(email, password)
             SuccessToast("logged in successfull")
             setIsModalOpen(false)
         } catch (error) {
@@ -39,8 +38,8 @@ export default function Login() {
                 SuccessToast("registration successfull")
                 setIsModalOpen(false)
             }
-        } catch (error: any) {
-            // setError(error?.data?.message || 'Registration failed. Please try again.')
+        } catch (error: unknown) {
+            console.log(error)
         }
     }
 
